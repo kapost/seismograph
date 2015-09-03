@@ -20,7 +20,7 @@ RSpec.describe Seismograph::Log do
     end
 
     it 'allows tags' do
-      subject.send(alert_type, 'Hey wtf with tags', tags: ['superman'])
+      subject.send(alert_type, 'Hey wtf with tags', tags: 'superman')
       expect(client_double).to have_received(:event).once.with('Hey wtf with tags', '', tags: ['superman'], source_type_name: 'myapp', alert_type: alert_type.to_s)
     end
 

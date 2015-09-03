@@ -11,6 +11,8 @@ module Seismograph
       private
 
       def log(message, description, params)
+        params[:tags] = Array(params[:tags]) if params.key?(:tags)
+        
         Gateway.event(
           message,
           description,
