@@ -14,13 +14,14 @@ module Seismograph
       def client
         @client ||= Statsd.new(Seismograph.config.statsd_host,
                                Seismograph.config.statsd_port,
-                               namespace: "#{Seismograph.config.app_name}#{env_segment}")
+                               namespace: namespace)
       end
 
-      def env_segment
-        env = ENV['RAILS_ENV'] || ENV['RACK_ENV']
-        return ".#{env}" if env
-        ''
+      def namespace
+        [
+          Seismograph.config.app_name,
+          Seismograph.config.env
+        ].compact.join('.')
       end
     end
   end
