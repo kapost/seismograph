@@ -4,8 +4,8 @@ module Seismograph
   module Gateway
     class << self
       [:histogram, :increment, :time, :event].each do |method|
-        define_method(method) do |*args|
-          client.send(method, *args)
+        define_method(method) do |*args, &block|
+          client.send(method, *args, &block)
         end
       end
 
