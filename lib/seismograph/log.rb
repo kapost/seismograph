@@ -1,6 +1,10 @@
+require 'seismograph/parameterize'
+
 module Seismograph
   module Log
     class << self
+      include Parameterize
+
       [:info, :error, :warning, :success].each do |alert_type|
         define_method alert_type do |message, params = {}|
           description = params.delete(:description) || ''
@@ -11,15 +15,8 @@ module Seismograph
       private
 
       def log(message, description, params)
-        params[:tags] = Array(params[:tags]) if params.key?(:tags)
-        
-        Gateway.event(
-          message,
-          description,
-          params.merge(
-            source_type_name: Seismograph.config.app_name
-          )
-        )
+        params = gateway_params(params).merge(source_type_name: Seismograph.config.app_name)
+        Gateway.event(message, description, params)
       end
     end
   end

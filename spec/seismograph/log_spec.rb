@@ -7,6 +7,7 @@ RSpec.describe Seismograph::Log do
 
   before do
     allow(Seismograph::Gateway).to receive(:client).and_return(client_double)
+    allow(Seismograph.config).to receive(:env).and_return(nil)
 
     Seismograph.config do |config|
       config.app_name = 'myapp'

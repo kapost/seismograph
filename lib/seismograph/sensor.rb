@@ -1,7 +1,10 @@
 require 'seismograph/gateway'
+require 'seismograph/parameterize'
 
 module Seismograph
   class Sensor
+    include Parameterize
+
     attr_reader :namespace
 
     def initialize(namespace)
@@ -32,10 +35,6 @@ module Seismograph
         increment("#{description}.failure", gateway_params(params))
         raise e
       end
-    end
-
-    def gateway_params(params)
-      params.key?(:tags) ? { tags: Array(params[:tags]) } : { }
     end
 
     def stat(description)
