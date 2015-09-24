@@ -11,6 +11,10 @@ RSpec.describe Seismograph::Parameterize do
   end
 
   describe '#gateway_params' do
+    before do
+      allow(Seismograph.config).to receive(:env).and_return(nil)
+    end
+
     describe 'when tags is not an array' do
       it 'is converted to an array' do
         expect(subject.gateway_params(tags: 'foo')).to eq(tags: %w[foo])
