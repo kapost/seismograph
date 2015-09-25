@@ -3,12 +3,14 @@ module Seismograph
     protected
 
     def gateway_params(params = {})
+      app = Seismograph.config.app_name
       env = Seismograph.config.env
 
       params.dup.tap do |p|
         p[:tags] = Array(params[:tags])
+        p[:tags] << "app:#{app}"
         p[:tags] << "env:#{env}" unless env.nil?
-        p.delete(:tags) if p[:tags].empty?
+        p[:tags].uniq!
       end
     end
   end

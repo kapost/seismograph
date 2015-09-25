@@ -8,17 +8,21 @@ RSpec.describe Seismograph::Sensor do
   before do
     allow(Seismograph::Gateway).to receive(:client).and_return(client_double)
     allow(Seismograph.config).to receive(:env).and_return(nil)
+
+    Seismograph.config do |config|
+      config.app_name = 'myapp'
+    end
   end
 
   describe '#count' do
     it 'requires an amount argument' do
       subject.count('metric', 5)
-      expect(client_double).to have_received(:histogram).once.with('mynamespace.metric', 5, {})
+      expect(client_double).to have_received(:histogram).once.with('mynamespace.metric', 5, tags: %w[app:myapp])
     end
 
     it 'accepts tags' do
       subject.count('metric', 1, tags: 'sometag')
-      expect(client_double).to have_received(:histogram).once.with('mynamespace.metric', 1, tags: ['sometag'])
+      expect(client_double).to have_received(:histogram).once.with('mynamespace.metric', 1, tags: %w[sometag app:myapp])
     end
 
     it 'accepts a block' do
@@ -28,7 +32,7 @@ RSpec.describe Seismograph::Sensor do
       end
 
       expect(x).to eql(1)
-      expect(client_double).to have_received(:histogram).once.with('mynamespace.metric', 2, {})
+      expect(client_double).to have_received(:histogram).once.with('mynamespace.metric', 2, tags: %w[app:myapp])
     end
 
     it 'increments failures if exception is thrown' do
@@ -36,7 +40,7 @@ RSpec.describe Seismograph::Sensor do
         fail 'My error'
       end rescue nil
 
-      expect(client_double).to have_received(:increment).once.with('mynamespace.metric.failure', {})
+      expect(client_double).to have_received(:increment).once.with('mynamespace.metric.failure', tags: %w[app:myapp])
     end
 
     it 're-raises error' do
@@ -51,7 +55,7 @@ RSpec.describe Seismograph::Sensor do
   describe '#increment' do
     it 'accepts tags' do
       subject.increment('metric', tags: 'sometag')
-      expect(client_double).to have_received(:increment).once.with('mynamespace.metric', tags: ['sometag'])
+      expect(client_double).to have_received(:increment).once.with('mynamespace.metric', tags: %w[sometag app:myapp])
     end
   end
 
@@ -60,7 +64,7 @@ RSpec.describe Seismograph::Sensor do
       subject.benchmark('metric') do
         # Slow stuff
       end
-      expect(client_double).to have_received(:time).once.with('mynamespace.metric', {})
+      expect(client_double).to have_received(:time).once.with('mynamespace.metric', tags: %w[app:myapp])
     end
   end
 end
