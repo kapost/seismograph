@@ -17,17 +17,17 @@ RSpec.describe Seismograph::Log do
   shared_examples_for 'alert type method' do |alert_type|
     it 'sends event with specified alert type' do
       subject.send(alert_type, 'Hey wtf')
-      expect(client_double).to have_received(:event).once.with('Hey wtf', '', source_type_name: 'myapp', alert_type: alert_type.to_s)
+      expect(client_double).to have_received(:event).once.with('Hey wtf', '', source_type_name: 'myapp', alert_type: alert_type.to_s, tags: %w[app:myapp])
     end
 
     it 'allows tags' do
       subject.send(alert_type, 'Hey wtf with tags', tags: 'superman')
-      expect(client_double).to have_received(:event).once.with('Hey wtf with tags', '', tags: ['superman'], source_type_name: 'myapp', alert_type: alert_type.to_s)
+      expect(client_double).to have_received(:event).once.with('Hey wtf with tags', '', source_type_name: 'myapp', alert_type: alert_type.to_s, tags: %w[superman app:myapp])
     end
 
     it 'allows description' do
       subject.send(alert_type, 'Hey wtf with description', description: 'batcave')
-      expect(client_double).to have_received(:event).once.with('Hey wtf with description', 'batcave', source_type_name: 'myapp', alert_type: alert_type.to_s)
+      expect(client_double).to have_received(:event).once.with('Hey wtf with description', 'batcave', source_type_name: 'myapp', alert_type: alert_type.to_s, tags: %w[app:myapp])
     end
   end
 
