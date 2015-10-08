@@ -10,15 +10,20 @@ Add this line to your application's Gemfile:
 gem 'seismograph'
 ```
 
+If not using bundler, be sure to require the gem:
+
+```ruby
+require 'seismograph'
+```
+
 ## Usage
 
 Configure your statsd server:
 
 ```ruby
-require 'seismograph'
-
 Seismograph.config do |config|
-  config.app_name    = 'cabbagepult'
+  config.app_name    = 'cabbagepult'  # optional
+  config.env         = 'staging'      # optional, defaults to `RAILS_ENV` or `RACK_ENV`
   config.statsd_host = ENV.fetch('STATSD_HOST')
   config.statsd_port = ENV.fetch('STATSD_PORT')
 end
@@ -43,7 +48,25 @@ def create
 end
 ```
 
-#### Benchmarking:
+### Counting:
+
+Counting is useful for tracking simple quantities or events.  It accepts a numeric value (default
+is 1) and an optional block.  In addition to counting, this method will also track success or
+failure (via incrementing) depending on whether an error is raised.
+
+```ruby
+sensor.count('signup', 2)
+
+sensor.count('signup') do
+  User.create!(attributes)
+end
+```
+
+### Benchmarking:
+
+Benchmarking is useful for tracking how long an operation takes.  In addition to tracking the
+timing, this method will also track success or failure (via incrementing) depending on whether an
+error is raised.
 
 ```ruby
 def create
@@ -54,7 +77,20 @@ def create
 end
 ```
 
-#### Logging events:
+### Incrementing/Decrementing:
+
+Simple incrementing and decrementing can be performed on a stat.  Both methods accept a numeric
+value (default is 1).
+
+```ruby
+sensor.increment('memberships')
+sensor.decrement('memberships', 2)
+```
+
+### Logging events:
+
+Logging can be used for tracking critical events.  Valid log methods are `info`, `warning`,
+`error`, and `success`.
 
 ```ruby
 task :deploy do
@@ -67,8 +103,6 @@ task :deploy do
 
   # "warning" and "success" are the remaining type alert type possibilities
 end
-
-
 ```
 
 ## Contributing
