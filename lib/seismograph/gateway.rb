@@ -3,7 +3,7 @@ require 'statsd'
 module Seismograph
   module Gateway
     class << self
-      [:histogram, :increment, :decrement, :time, :event].each do |method|
+      [:histogram, :increment, :decrement, :time, :timing, :event].each do |method|
         define_method(method) do |*args, &block|
           client.send(method, *args, &block)
         end

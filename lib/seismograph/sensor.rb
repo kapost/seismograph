@@ -23,6 +23,12 @@ module Seismograph
       Gateway.decrement(stat(description), gateway_params(params))
     end
 
+    # Record the time (in ms) when the code has already been executed. Useful for
+    # ActiveSupport::Instrumentation event.duration (which is already in ms)
+    def timing(description, duration, params = {})
+      Gateway.timing(stat(description), duration, gateway_params(params))
+    end
+
     def benchmark(description, params = {}, &block)
       with_success_and_failure(description, params) do
         Gateway.time(stat(description), gateway_params(params), &block)
