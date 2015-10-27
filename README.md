@@ -77,6 +77,31 @@ def create
 end
 ```
 
+### Timing:
+
+Timing is useful for tracking how long an operation takes, when that operation
+has already been run. For example, in the subscriber to an
+`ActiveSupport::Instrumentation` event. Expects the duration argument to be in
+ms (which the ActiveSupport event.duration already is).
+
+```ruby
+class ActiveJobSubscriber < ActiveSupport::Subscriber
+
+  attach_to :active_job
+
+  def perform(event)
+    job = event.payload[:job]
+
+    sensor.timing "perform", event.duration, sample_rate: 0.5, tags: [job.name, job.queue_name]
+  end
+
+  def sensor
+    @sensor ||= Seismograph::Sensor.new("active_job")
+  end
+
+end
+```
+
 ### Incrementing/Decrementing:
 
 Simple incrementing and decrementing can be performed on a stat.  Both methods accept a numeric

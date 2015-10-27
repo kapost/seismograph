@@ -124,7 +124,6 @@ RSpec.describe Seismograph::Sensor do
     it "records the duration" do
       subject.timing('response_time', 5)
       expect(client_double).to have_received(:timing).once.with('mynamespace.response_time', 5, tags: %w[app:myapp])
-
     end
   end
 end
