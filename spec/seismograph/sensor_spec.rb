@@ -17,14 +17,24 @@ RSpec.describe Seismograph::Sensor do
   describe '#increment' do
     it 'accepts tags' do
       subject.increment('metric', tags: 'sometag')
-      expect(client_double).to have_received(:increment).once.with('mynamespace.metric', tags: %w[sometag app:myapp])
+      expect(client_double).to have_received(:increment).once.with('mynamespace.metric', 1, tags: %w[sometag app:myapp])
+    end
+
+    it "accepts a count" do
+      subject.increment('metric', 42)
+      expect(client_double).to have_received(:increment).once.with('mynamespace.metric', 42, tags: ["app:myapp"])
     end
   end
 
   describe '#decrement' do
     it 'accepts tags' do
       subject.decrement('metric', tags: 'sometag')
-      expect(client_double).to have_received(:decrement).once.with('mynamespace.metric', tags: %w[sometag app:myapp])
+      expect(client_double).to have_received(:decrement).once.with('mynamespace.metric', 1, tags: %w[sometag app:myapp])
+    end
+
+    it "accepts a count" do
+      subject.decrement('metric', 42)
+      expect(client_double).to have_received(:decrement).once.with('mynamespace.metric', 42, tags: ["app:myapp"])
     end
   end
 
@@ -57,7 +67,7 @@ RSpec.describe Seismograph::Sensor do
 
       it 'increments successes' do
         count
-        expect(client_double).to have_received(:increment).once.with('mynamespace.metric.success', tags: %w[app:myapp])
+        expect(client_double).to have_received(:increment).once.with('mynamespace.metric.success', 1, tags: %w[app:myapp])
       end
     end
 
@@ -73,7 +83,7 @@ RSpec.describe Seismograph::Sensor do
 
       it 'increments failures' do
         count rescue nil
-        expect(client_double).to have_received(:increment).once.with('mynamespace.metric.failure', tags: %w[app:myapp])
+        expect(client_double).to have_received(:increment).once.with('mynamespace.metric.failure', 1, tags: %w[app:myapp])
       end
 
       it 're-raises error' do
@@ -95,7 +105,7 @@ RSpec.describe Seismograph::Sensor do
 
       it 'increments successes' do
         benchmark
-        expect(client_double).to have_received(:increment).once.with('mynamespace.metric.success', tags: %w[app:myapp])
+        expect(client_double).to have_received(:increment).once.with('mynamespace.metric.success', 1, tags: %w[app:myapp])
       end
     end
 
@@ -115,7 +125,7 @@ RSpec.describe Seismograph::Sensor do
 
       it 'increments failures' do
         benchmark rescue nil
-        expect(client_double).to have_received(:increment).once.with('mynamespace.metric.failure', tags: %w[app:myapp])
+        expect(client_double).to have_received(:increment).once.with('mynamespace.metric.failure', 1, tags: %w[app:myapp])
       end
     end
   end
