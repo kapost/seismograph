@@ -16,5 +16,4 @@ mkmf.log
 
 *.gem
 .ruby-gemset
-.ruby-version
 .DS_Store
