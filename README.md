@@ -91,8 +91,9 @@ class ActiveJobSubscriber < ActiveSupport::Subscriber
 
   def perform(event)
     job = event.payload[:job]
+    tags = ["jobs:#{job.name}", "queue:#{job.queue_name}"]
 
-    sensor.timing "perform", event.duration, sample_rate: 0.5, tags: [job.name, job.queue_name]
+    sensor.timing "perform", event.duration, sample_rate: 0.5, tags: tags
   end
 
   def sensor
