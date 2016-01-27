@@ -87,6 +87,15 @@ sensor.increment('memberships')
 sensor.decrement('memberships', 2)
 ```
 
+### Gauge:
+
+Gauge is meant for static numbers that you want to track over time (as opposed to a rate for which
+you would use `#count`).
+
+```ruby
+sensor.gauge('collection_count', Collection.count)
+```
+
 ### Logging events:
 
 Logging can be used for tracking critical events.  Valid log methods are `info`, `warning`,
