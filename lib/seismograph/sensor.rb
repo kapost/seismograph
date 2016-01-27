@@ -35,6 +35,10 @@ module Seismograph
       end
     end
 
+    def gauge(description, value, params = {})
+      Gateway.gauge(stat(description), value, gateway_params(params))
+    end
+
     private
 
     def track(description, amount, params = {})

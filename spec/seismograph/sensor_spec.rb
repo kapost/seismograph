@@ -3,7 +3,7 @@ require 'spec_helper'
 RSpec.describe Seismograph::Sensor do
   subject { described_class.new('mynamespace') }
 
-  let(:client_double) { double('statsd client', histogram: true, increment: true, decrement: true, time: true, timing: true) }
+  let(:client_double) { double('statsd client', histogram: true, increment: true, decrement: true, time: true, timing: true, gauge: true) }
 
   before do
     allow(Seismograph::Gateway).to receive(:client).and_return(client_double)
@@ -120,10 +120,17 @@ RSpec.describe Seismograph::Sensor do
     end
   end
 
-  describe "#timing" do
-    it "records the duration" do
+  describe '#timing' do
+    it 'records the duration' do
       subject.timing('response_time', 5)
       expect(client_double).to have_received(:timing).once.with('mynamespace.response_time', 5, tags: %w[app:myapp])
+    end
+  end
+
+  describe '#gauge' do
+    it 'requires a gauge metric' do
+      subject.gauge('my_gauge', 2001)
+      expect(client_double).to have_received(:gauge).once.with('mynamespace.my_gauge', 2001, tags: %w[app:myapp])
     end
   end
 end
