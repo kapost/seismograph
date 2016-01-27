@@ -4,9 +4,11 @@ module Seismograph
   module Gateway
     class << self
       [:histogram, :increment, :decrement, :time, :event].each do |method|
-        define_method(method) do |*args, &block|
-          client.send(method, *args, &block)
-        end
+        class_eval <<-RUBY, __FILE__, __LINE__+1
+          def #{method}(*a, &b)
+            client.send(:#{method}, *a, &b)
+          end
+        RUBY
       end
 
       private
