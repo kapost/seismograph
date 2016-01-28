@@ -135,8 +135,6 @@ task :deploy do
   rescue StandardError => e
     Seismograph::Log.error('Deployment failed!', description: e.message)
   end
-
-  # "warning" and "success" are the remaining type alert type possibilities
 end
 ```
 

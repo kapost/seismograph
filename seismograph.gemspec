@@ -11,7 +11,7 @@ Gem::Specification.new do |spec|
   spec.summary       = %q{Helper library to report stats and events to datadoghq}
   spec.description   = %q{Wraps dogstatsd-ruby with helpful conventions}
   spec.homepage      = 'https://github.com/kapost/seismograph'
-  spec.license       = 'Proprietary'
+  spec.license       = 'MIT'
 
   spec.files         = `git ls-files -z`.split("\x0").reject { |f| f.match(%r{^(test|spec|features)/}) }
   spec.executables   = spec.files.grep(%r{^bin/}) { |f| File.basename(f) }
