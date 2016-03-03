@@ -14,6 +14,16 @@ RSpec.describe Seismograph::Sensor do
     end
   end
 
+  shared_examples_for 'block instrument' do |method, *args|
+    it 'returns the result of the block' do
+      r = subject.send(method, *args) do
+        'block return value'
+      end
+
+      expect(r).to eql('block return value')
+    end
+  end
+
   describe '#increment' do
     it 'accepts tags' do
       subject.increment('metric', tags: 'sometag')
@@ -29,6 +39,8 @@ RSpec.describe Seismograph::Sensor do
   end
 
   describe '#count' do
+    it_behaves_like 'block instrument', :count, 'metric', 5
+
     it 'requires an amount argument' do
       subject.count('metric', 5)
       expect(client_double).to have_received(:histogram).once.with('mynamespace.metric', 5, tags: %w[app:myapp])
@@ -83,6 +95,10 @@ RSpec.describe Seismograph::Sensor do
   end
 
   describe '#benchmark' do
+    let(:client_double) { double('statsd client', histogram: true, increment: true, decrement: true, time: 'block return value', timing: true, gauge: true) }
+
+    it_behaves_like 'block instrument', :benchmark, 'metric'
+
     describe 'when an error is not raised' do
       def benchmark
         subject.benchmark('metric') { }

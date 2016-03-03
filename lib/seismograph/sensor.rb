@@ -43,14 +43,16 @@ module Seismograph
 
     def track(description, amount, params = {})
       with_success_and_failure(description, params) do
-        yield if block_given?
+        result = yield if block_given?
         Gateway.histogram(stat(description), amount, gateway_params(params))
+        result
       end
     end
 
     def with_success_and_failure(description, params)
-      yield
+      result = yield
       increment("#{description}.success", gateway_params(params))
+      result
     rescue StandardError => e
       increment("#{description}.failure", gateway_params(params))
       raise e
