@@ -1,3 +1,4 @@
+require 'seismograph/gateway'
 require 'seismograph/parameterize'
 
 module Seismograph

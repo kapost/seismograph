@@ -24,6 +24,22 @@ RSpec.describe Seismograph::Sensor do
     end
   end
 
+  context 'when enabled is false' do
+    around do |example|
+      begin
+        Seismograph.config.enabled = false
+        example.run
+      ensure
+        Seismograph.config.enabled = true
+      end
+    end
+
+    it 'does not call client' do
+      subject.increment('metric', tags: 'sometag')
+      expect(client_double).to_not have_received(:increment)
+    end
+  end
+
   describe '#increment' do
     it 'accepts tags' do
       subject.increment('metric', tags: 'sometag')
