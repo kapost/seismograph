@@ -138,6 +138,12 @@ task :deploy do
 end
 ```
 
+### Test Environment:
+
+To disable seismograph in your test environment, include this file in your test helper:
+
+`require 'seismograph/testing'`
+
 ## Contributing
 
 1. Fork it
